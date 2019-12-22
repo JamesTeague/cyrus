@@ -1,26 +1,36 @@
 {
-  "name": "place-package-name-here",
+  "name": "@penguinhouse/cyrus",
   "version": "0.0.1",
-  "description": "template for setting up project",
-  "author": "",
+  "description": "PubSub library using Rxjs and Postgres Notify-Listen",
+  "author": "James Teague II <james@teague.dev>",
   "repository": {
     "type": "git",
-    "url": "git-url-goes-here"
+    "url": "https://github.com/JamesTeague/cyrus.git"
   },
-  "homepage": "git-url-goes-here#readme",
+  "homepage": "https://github.com/JamesTeague/cyrus#readme",
   "dependencies": {},
-  "main": "index.js",
-  "module": "",
-  "files": [],
-  "types": "",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "test": "jest --passWithNoTests"
+    "build": "rollup -c",
+    "prepublish": "npm run test && npm run build",
+    "watch": "rollup -cw",
+    "test": "jest"
   },
-  "keywords": [],
+  "keywords": [
+    "pubsub",
+    "postgres",
+    "listen",
+    "notify",
+    "rxjs"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "git-url-goes-here/issues"
+    "url": "https://github.com/JamesTeague/cyrus/issues"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
