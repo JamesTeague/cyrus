@@ -5,7 +5,7 @@ import { NullLog } from '@penguinhouse/stoolie';
 import Pool from 'pg-pool';
 import * as Rx from 'rxjs';
 import PgNotifier from 'rxnotifier/pg_notifier';
-import RxNotifier from './index';
+import RxNotifier from './RxNotifier';
 
 describe('RxNotifier', () => {
   const mockedNotify = jest.fn().mockName('notify');
