@@ -1,6 +1,5 @@
 import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json';
-import path from 'path';
 import commonjs from '@rollup/plugin-commonjs';
 
 export default {

@@ -1,13 +1,12 @@
 jest.mock('pg-pool');
 jest.mock('rxnotifier/pg_notifier');
 
-import Pool from 'pg-pool';
 import cyrus from './index';
 import RxNotifier from './RxNotifier';
 
 describe('Cyrus', () => {
-  it('initialize library', () => {
-    const notifier = cyrus(new Pool());
+  it('initializes library', () => {
+    const notifier = cyrus({ appName: 'index.spec.ts' });
 
     expect(notifier).toBeInstanceOf(RxNotifier);
     expect(notifier.on).toBeDefined();
