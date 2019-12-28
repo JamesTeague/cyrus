@@ -10,12 +10,25 @@ npm install @penguinhouse/cyrus
 ```
 
 ### Usage
-```
-import cyrus from '@penguinhouse/cyrus;
-import Pool from 'pg-pool';
+#### Options
+- appName (required): string
+    - name of the application (used for logging)
+- user (optional): string
+    - option for Postgres Pool Connection
+- password (optional): string
+    - option for Postgres Pool Connection
+- host (optional): string
+    - option for Postgres Pool Connection
+- port (optional): number
+    - option for Postgres Pool Connection
+- database (optional): string
+    - option for Postgres Pool Connection
 
 
-const notifier = cyrus(new Pool());
+```javascript
+import cyrus from '@penguinhouse/cyrus';
+
+const notifier = cyrus({ appName: 'cyrus-example' });
 
 // Create an observable to with a channel to listen to
 const observable = notifier.on('example-channel'); // Rx.Observable
