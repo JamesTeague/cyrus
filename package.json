@@ -10,6 +10,7 @@
   "homepage": "https://github.com/JamesTeague/cyrus#readme",
   "dependencies": {
     "@penguinhouse/stoolie": "^0.0.3",
+    "pg": "^7.17.0",
     "pg-pool": "^2.0.8",
     "rxjs": "^6.5.3"
   },
