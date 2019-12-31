@@ -1,8 +1,9 @@
+import pg from 'pg';
 import * as Rx from 'rxjs';
 
 export interface IRxNotifier {
   on(key: string): Rx.ConnectableObservable<any>;
-  notify(channel: string, message: any): Promise<void>;
+  notify(channel: string, message: any): Promise<pg.QueryResult>;
 }
 
 export type PlatformOptions = {

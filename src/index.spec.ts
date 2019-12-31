@@ -1,5 +1,5 @@
 jest.mock('pg-pool');
-jest.mock('rxnotifier/pg_notifier');
+jest.mock('./PgNotifier');
 
 import cyrus from './index';
 import RxNotifier from './RxNotifier';

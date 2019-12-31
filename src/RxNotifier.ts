@@ -1,8 +1,9 @@
 import { ILogger } from '@penguinhouse/stoolie';
+import pg from 'pg';
 import Pool from 'pg-pool';
 import * as Rx from 'rxjs';
 import * as RxOp from 'rxjs/operators';
-import PgNotifier from 'rxnotifier/pg_notifier';
+import PgNotifier from './PgNotifier';
 import { IRxNotifier } from './types';
 
 type ConsumerMap = {
@@ -14,7 +15,7 @@ export default class RxNotifier implements IRxNotifier {
   private readonly consumerMap: ConsumerMap;
   private logger: ILogger;
 
-  constructor(pool: Pool, logger: ILogger) {
+  constructor(pool: Pool<pg.Client>, logger: ILogger) {
     this.notifier = new PgNotifier(pool);
     this.consumerMap = {};
     this.logger = logger.withCategory('RxNotifier');
@@ -33,9 +34,9 @@ export default class RxNotifier implements IRxNotifier {
 
     const consumer = this.notifier.channel(channel).pipe(RxOp.publish());
 
-    this.consumerMap[channel] = consumer;
+    this.consumerMap[channel] = consumer as Rx.ConnectableObservable<any>;
 
-    return consumer;
+    return consumer as Rx.ConnectableObservable<any>;
   }
 
   notify(channel: string, message: any) {
