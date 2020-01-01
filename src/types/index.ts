@@ -3,6 +3,7 @@ import * as Rx from 'rxjs';
 
 export interface IRxNotifier {
   on(key: string): Rx.ConnectableObservable<any>;
+  connect(): Promise<boolean>;
   notify(channel: string, message: any): Promise<pg.QueryResult>;
 }
 
