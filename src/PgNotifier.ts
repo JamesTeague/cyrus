@@ -1,31 +1,25 @@
 import pg from 'pg';
-import Pool from 'pg-pool';
 import MemoryNotifier from './MemoryNotifier';
 
-const {escapeIdentifier, escapeLiteral} = pg.Client.prototype;
+const { escapeIdentifier, escapeLiteral } = pg.Client.prototype;
 
 export default class PgNotifier {
-  private pool: Pool<pg.Client>;
-  private notifyClient: Promise<pg.PoolClient>;
+  private notifyClient: pg.PoolClient;
   private memoryNotifier: MemoryNotifier;
 
-  constructor(pool: Pool<pg.Client>) {
-    this.pool = pool;
-
+  constructor(client: pg.PoolClient) {
     // Keep one connection open for notifications
-    this.notifyClient = this.pool.connect();
+    this.notifyClient = client;
 
-    const onListen = (key) => this.notifyClient
-      .then((client) => client.query('LISTEN ' + escapeIdentifier(key)));
-    const onUnlisten = (key) => this.notifyClient
-      .then((client) => client.query('UNLISTEN ' + escapeIdentifier(key)));
+    const onListen = key =>
+      this.notifyClient.query('LISTEN ' + escapeIdentifier(key));
+    const onUnlisten = key =>
+      this.notifyClient.query('UNLISTEN ' + escapeIdentifier(key));
 
     this.memoryNotifier = new MemoryNotifier(onListen, onUnlisten);
 
-    this.notifyClient.then((client) => {
-      client.on('notification', (event) => {
-        this.memoryNotifier.notify(event.channel, event.payload);
-      });
+    this.notifyClient.on('notification', event => {
+      this.memoryNotifier.notify(event.channel, event.payload);
     });
   }
 
@@ -40,6 +34,6 @@ export default class PgNotifier {
       cmd += `, ${escapeLiteral(message)}`;
     }
 
-    return this.pool.query(cmd);
+    return this.notifyClient.query(cmd);
   }
 }

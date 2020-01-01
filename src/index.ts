@@ -12,7 +12,7 @@ function cyrus(platformOptions: PlatformOptions) {
 
   const pool = new Pool(options);
 
-  return new RxNotifier(pool, logger)
+  return new RxNotifier(pool, logger);
 }
 
 export default cyrus;

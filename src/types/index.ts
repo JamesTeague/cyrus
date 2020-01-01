@@ -14,4 +14,4 @@ export type PlatformOptions = {
 
   port?: number;
   database?: string;
-}
+};

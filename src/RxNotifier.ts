@@ -8,38 +8,69 @@ import { IRxNotifier } from './types';
 
 type ConsumerMap = {
   [key: string]: Rx.ConnectableObservable<any>;
-}
+};
 
 export default class RxNotifier implements IRxNotifier {
-  private notifier: PgNotifier;
+  connected: boolean;
+  private notifier: PgNotifier | undefined;
   private readonly consumerMap: ConsumerMap;
   private logger: ILogger;
+  private pool: Pool<pg.Client>;
 
   constructor(pool: Pool<pg.Client>, logger: ILogger) {
-    this.notifier = new PgNotifier(pool);
+    this.pool = pool;
     this.consumerMap = {};
     this.logger = logger.withCategory('RxNotifier');
+    this.connected = false;
+  }
+
+  async connect() {
+    const client = await this.pool.connect();
+
+    if (client) {
+      this.notifier = new PgNotifier(client);
+      this.connected = true;
+    }
+
+    return this.connected;
   }
 
   on(channel: string) {
-    this.logger.withFields({ channel }).debug('Consumer requested.');
+    if (this.connected && this.notifier) {
+      this.logger.withFields({ channel }).debug('Consumer requested.');
 
-    if (this.consumerMap[channel]) {
-      this.logger.debug('Existing consumer found');
+      if (this.consumerMap[channel]) {
+        this.logger.debug('Existing consumer found');
 
-      return this.consumerMap[channel];
+        return this.consumerMap[channel];
+      }
+
+      this.logger.debug('Creating new consumer');
+
+      const consumer = this.notifier.channel(channel).pipe(RxOp.publish());
+
+      this.consumerMap[channel] = consumer as Rx.ConnectableObservable<any>;
+
+      return consumer as Rx.ConnectableObservable<any>;
     }
 
-    this.logger.debug('Creating new consumer');
+    const error = new Error('Notifier is not connected.');
+    this.logger
+      .withError(error)
+      .error('Notifier must be connected.')
+      .withFields({ c: this.connected, n: this.notifier });
 
-    const consumer = this.notifier.channel(channel).pipe(RxOp.publish());
-
-    this.consumerMap[channel] = consumer as Rx.ConnectableObservable<any>;
-
-    return consumer as Rx.ConnectableObservable<any>;
+    throw error;
   }
 
   notify(channel: string, message: any) {
-    return this.notifier.notify(channel, message);
+    if (this.connected && this.notifier) {
+      return this.notifier.notify(channel, message);
+    }
+
+    const error = new Error('Notifier is not connected.');
+    this.logger.withError(error).error('Notifier must be connected.');
+
+    throw error;
   }
 }

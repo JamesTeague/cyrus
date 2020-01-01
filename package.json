@@ -22,7 +22,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && rollup -c",
-    "prettier:": "prettier --write 'src/**/*.{js,ts}'",
+    "prettier": "prettier --write 'src/**/*.{js,ts}'",
     "prettier:check": "prettier --check 'src/**/*.{js,ts}'",
     "preversion": "npm run test",
     "version": "",
@@ -82,7 +82,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm test",
+      "pre-commit": "npm run prettier:check && npm test",
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
     }
   }

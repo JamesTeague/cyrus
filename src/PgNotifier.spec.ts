@@ -1,3 +1,5 @@
+jest.mock('pg-pool');
+
 import Pool from 'pg-pool';
 import MemoryNotifier from './MemoryNotifier';
 import PgNotifier from './PgNotifier';
@@ -5,14 +7,22 @@ jest.mock('./MemoryNotifier');
 
 describe('PgNotifier', () => {
   let pgNotifier;
-  const pool = new Pool();
+  let pool;
 
   beforeEach(() => {
+    ((Pool as any) as jest.Mock).mockClear();
+    ((Pool as any) as jest.Mock).mockImplementation(() => ({
+      on: jest.fn(),
+      query: jest.fn(),
+    }));
+
+    pool = new Pool();
     pgNotifier = new PgNotifier(pool);
   });
 
   it('calls notifier to create channel', () => {
-    const memoryNotifierInstance = (MemoryNotifier as any as jest.Mock).mock.instances[0];
+    const memoryNotifierInstance = ((MemoryNotifier as any) as jest.Mock).mock
+      .instances[0];
 
     pgNotifier.channel('test');
 
@@ -24,6 +34,6 @@ describe('PgNotifier', () => {
 
     pgNotifier.notify('test', 'message');
 
-    expect(spy).toHaveBeenCalledWith('NOTIFY \"test\", \'message\'');
+    expect(spy).toHaveBeenCalledWith('NOTIFY "test", \'message\'');
   });
 });

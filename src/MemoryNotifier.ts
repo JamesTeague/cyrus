@@ -12,12 +12,12 @@ export default class MemoryNotifier {
   }
 
   channel(key) {
-    return new Rx.Observable((observer) => {
+    return new Rx.Observable(observer => {
       let readyPromise;
 
       if (!(key in this.observers)) {
         this.observers[key] = [];
-        if (this.onListen){
+        if (this.onListen) {
           readyPromise = this.onListen(key);
         }
       }
@@ -26,7 +26,8 @@ export default class MemoryNotifier {
 
       if (readyPromise) {
         readyPromise.then(
-          () => observer.next('ready'), (err) => observer.error(err)
+          () => observer.next('ready'),
+          err => observer.error(err)
         );
       } else {
         observer.next('ready');
@@ -44,13 +45,13 @@ export default class MemoryNotifier {
             this.onUnlisten(key);
           }
         }
-      }
+      };
     });
   }
 
   notify(channel, message) {
     if (channel in this.observers) {
-      this.observers[channel].forEach((observer) => observer.next(message || ''));
+      this.observers[channel].forEach(observer => observer.next(message || ''));
     }
   }
 }
