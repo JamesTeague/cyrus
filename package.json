@@ -1,6 +1,6 @@
 {
   "name": "@penguinhouse/cyrus",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "PubSub library using Rxjs and Postgres Notify-Listen",
   "author": "James Teague II <james@teague.dev>",
   "repository": {
