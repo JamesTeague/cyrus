@@ -42,4 +42,7 @@ if (connectedSuccessfully) {
   // The message will show up in the observable.
   notifier.notify('example-channel', 'example-message');
 }
+
+// disconnect from the database by ending the pool
+notifier.disconnect()
 ```

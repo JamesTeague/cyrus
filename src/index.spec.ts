@@ -10,6 +10,8 @@ describe('Cyrus', () => {
 
     expect(notifier).toBeInstanceOf(RxNotifier);
     expect(notifier.on).toBeDefined();
+    expect(notifier.connect).toBeDefined();
+    expect(notifier.disconnect).toBeDefined();
     expect(notifier.notify).toBeDefined();
   });
 });

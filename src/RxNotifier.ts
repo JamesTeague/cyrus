@@ -35,6 +35,13 @@ export default class RxNotifier implements IRxNotifier {
     return this.connected;
   }
 
+  async disconnect() {
+    if (this.connected) {
+      await this.pool.end();
+      this.connected = false;
+    }
+  }
+
   on(channel: string) {
     if (this.connected && this.notifier) {
       this.logger.withFields({ channel }).debug('Consumer requested.');

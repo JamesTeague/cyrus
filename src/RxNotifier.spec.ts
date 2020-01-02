@@ -26,6 +26,7 @@ describe('RxNotifier', () => {
     }));
     ((Pool as any) as jest.Mock).mockImplementation(() => ({
       connect: jest.fn().mockReturnValue({}),
+      end: jest.fn(),
     }));
 
     pool = new Pool();
@@ -42,6 +43,36 @@ describe('RxNotifier', () => {
       expect(success).toBeFalsy();
       expect(notifier.connected).toBeFalsy();
     });
+  });
+
+  it('returns true when connected to database', () => {
+    notifier = new RxNotifier(pool, NullLog);
+
+    return notifier.connect().then(success => {
+      expect(success).toBeTruthy();
+      expect(notifier.connected).toBeTruthy();
+    });
+  });
+
+  it('disconnects when connected', async () => {
+    const spy = jest.spyOn(pool, 'end');
+    notifier = new RxNotifier(pool, NullLog);
+
+    await notifier.connect();
+    await notifier.disconnect();
+
+    expect(spy).toHaveBeenCalled();
+    expect(notifier.connected).toBeFalsy();
+  });
+
+  it('disconnects when not connected', async () => {
+    const spy = jest.spyOn(pool, 'end');
+    notifier = new RxNotifier(pool, NullLog);
+
+    await notifier.disconnect();
+
+    expect(spy).toHaveBeenCalledTimes(0);
+    expect(notifier.connected).toBeFalsy();
   });
 
   it('calls channel and returns a connectable observable', () => {
