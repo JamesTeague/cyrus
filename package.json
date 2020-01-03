@@ -29,7 +29,7 @@
     "postversion": "",
     "prepublishOnly": "npm run test && npm run build",
     "prerelease": "git checkout master && git pull origin master && npm i && git add .",
-    "release": "standard-version -a --no-verify",
+    "release": "HUSKY_SKIP_HOOKS=1 standard-version -a --no-verify",
     "postrelease": "run-s release:*",
     "release:tags": "git push --follow-tags origin master",
     "watch": "rollup -cw",
