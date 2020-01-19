@@ -1,5 +1,5 @@
 import { ILogger } from '@penguinhouse/stoolie';
-import pg from 'pg';
+import pg, { PoolClient } from 'pg';
 import Pool from 'pg-pool';
 import * as Rx from 'rxjs';
 import * as RxOp from 'rxjs/operators';
@@ -11,7 +11,8 @@ type ConsumerMap = {
 };
 
 export default class RxNotifier implements IRxNotifier {
-  connected: boolean;
+  private connected: boolean;
+  private client: PoolClient | undefined;
   private notifier: PgNotifier | undefined;
   private readonly consumerMap: ConsumerMap;
   private logger: ILogger;
@@ -25,10 +26,10 @@ export default class RxNotifier implements IRxNotifier {
   }
 
   async connect() {
-    const client = await this.pool.connect();
+    this.client = await this.pool.connect();
 
-    if (client) {
-      this.notifier = new PgNotifier(client);
+    if (this.client) {
+      this.notifier = new PgNotifier(this.client);
       this.connected = true;
     }
 
@@ -36,7 +37,8 @@ export default class RxNotifier implements IRxNotifier {
   }
 
   async disconnect() {
-    if (this.connected) {
+    if (this.connected && this.client) {
+      this.client.release();
       await this.pool.end();
       this.connected = false;
     }

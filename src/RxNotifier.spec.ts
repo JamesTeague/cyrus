@@ -25,7 +25,7 @@ describe('RxNotifier', () => {
       notify: mockedNotify,
     }));
     ((Pool as any) as jest.Mock).mockImplementation(() => ({
-      connect: jest.fn().mockReturnValue({}),
+      connect: jest.fn().mockReturnValue({ release: jest.fn() }),
       end: jest.fn(),
     }));
 
