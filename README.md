@@ -6,7 +6,7 @@ Pubsub library for Postgres.
 
 ### Install
 ```
-npm install @penguinhouse/cyrus
+npm install cyrus-rx
 ```
 
 ### Usage
@@ -26,7 +26,7 @@ npm install @penguinhouse/cyrus
 
 
 ```javascript
-import cyrus from '@penguinhouse/cyrus';
+import cyrus from 'cyrus-rx';
 
 const notifier = cyrus({ appName: 'cyrus-example' });
 
