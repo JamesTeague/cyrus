@@ -1,5 +1,5 @@
 {
-  "name": "cyrus",
+  "name": "cyrus-rx",
   "version": "1.0.0",
   "description": "PubSub library using Rxjs and Postgres Notify-Listen",
   "author": "James Teague II <james@teague.dev>",
