@@ -1,6 +1,6 @@
 {
   "name": "cyrus-rx",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PubSub library using Rxjs and Postgres Notify-Listen",
   "author": "James Teague II <james@teague.dev>",
   "repository": {
@@ -9,10 +9,10 @@
   },
   "homepage": "https://github.com/JamesTeague/cyrus#readme",
   "dependencies": {
-    "@penguinhouse/stoolie": "^0.0.3",
     "pg": "^7.17.0",
     "pg-pool": "^2.0.8",
-    "rxjs": "^6.5.3"
+    "rxjs": "^6.5.3",
+    "stoolie": "^1.0.0"
   },
   "main": "dist/index.js",
   "module": "dist/index.es.js",
