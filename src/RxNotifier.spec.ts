@@ -1,9 +1,9 @@
 jest.mock('pg-pool');
 jest.mock('./PgNotifier');
 
-import { NullLog } from '@penguinhouse/stoolie';
 import Pool from 'pg-pool';
 import * as Rx from 'rxjs';
+import { NullLog } from 'stoolie';
 import PgNotifier from './PgNotifier';
 import RxNotifier from './RxNotifier';
 

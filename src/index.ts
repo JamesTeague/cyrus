@@ -1,5 +1,5 @@
-import stoolie, { LogLevel } from '@penguinhouse/stoolie';
 import Pool from 'pg-pool';
+import stoolie, { LogLevel } from 'stoolie';
 import RxNotifier from './RxNotifier';
 import { IRxNotifier, PlatformOptions } from './types';
 
