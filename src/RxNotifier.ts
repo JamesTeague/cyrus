@@ -1,8 +1,8 @@
-import { ILogger } from '@penguinhouse/stoolie';
 import pg, { PoolClient } from 'pg';
 import Pool from 'pg-pool';
 import * as Rx from 'rxjs';
 import * as RxOp from 'rxjs/operators';
+import { ILogger } from 'stoolie';
 import PgNotifier from './PgNotifier';
 import { IRxNotifier } from './types';
 
