@@ -30,16 +30,16 @@ import cyrus from 'cyrus-rx';
 
 const notifier = cyrus({ appName: 'cyrus-example' });
 
-// It needs to be connected before user
+// It needs to be connected before used
 const connectedSuccessfully = await notifier.connect();
 
 if (connectedSuccessfully) {
   // Create an observable to with a channel to listen to
   // Rx.Observable
-  const observable = notifier.on('example-channel');
+  const observable$ = notifier.on('example-channel');
 
   // Sends this to postgres
-  // The message will show up in the observable.
+  // The observable will emit this message.
   notifier.notify('example-channel', 'example-message');
 }
 
