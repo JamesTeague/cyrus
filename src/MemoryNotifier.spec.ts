@@ -32,6 +32,26 @@ describe('MemoryNotifier', () => {
     expect(onListenSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('errors if onListen rejects', done => {
+    const onListenSpy = jest.fn().mockRejectedValue(false);
+    const errorSpy = jest.fn().mockImplementation(() => {
+      expect(onListenSpy).toHaveBeenCalled();
+      expect(errorSpy).toHaveBeenCalled();
+      done();
+    });
+
+    memoryNotifier = new MemoryNotifier(
+      onListenSpy,
+      jest.fn().mockResolvedValue(true)
+    );
+
+    const observable$ = memoryNotifier.channel('test');
+
+    observable$.subscribe({
+      error: errorSpy,
+    });
+  });
+
   it('calls unListen when all subscribes have unsubscribed', () => {
     const onUnlistenSpy = jest.fn().mockResolvedValue(true);
 
