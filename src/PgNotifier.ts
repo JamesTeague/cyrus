@@ -1,13 +1,13 @@
-import pg from 'pg';
+import { Client, PoolClient } from 'pg';
 import MemoryNotifier from './MemoryNotifier';
 
-const { escapeIdentifier, escapeLiteral } = pg.Client.prototype;
+const { escapeIdentifier, escapeLiteral } = Client.prototype;
 
 export default class PgNotifier {
-  private notifyClient: pg.PoolClient;
+  private notifyClient: PoolClient;
   private memoryNotifier: MemoryNotifier;
 
-  constructor(client: pg.PoolClient) {
+  constructor(client: PoolClient) {
     // Keep one connection open for notifications
     this.notifyClient = client;
 
