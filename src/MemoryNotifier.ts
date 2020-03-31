@@ -1,57 +1,46 @@
-import * as Rx from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+
+type PromiseFunction = (key: string) => Promise<any>;
 
 export default class MemoryNotifier {
-  private readonly observers: { [key: string]: Array<Rx.Subscriber<any>> };
-  private readonly onListen: (key: string) => Promise<any>;
-  private readonly onUnlisten: (key: string) => Promise<any>;
+  private readonly onListen: PromiseFunction;
+  private readonly onUnlisten: PromiseFunction;
+  private readonly subjectMap: Map<string, Subject<any>>;
 
-  constructor(onListen, onUnlisten) {
-    this.observers = {};
+  constructor(onListen: PromiseFunction, onUnlisten: PromiseFunction) {
     this.onListen = onListen;
     this.onUnlisten = onUnlisten;
+    this.subjectMap = new Map();
   }
 
-  channel(key) {
-    return new Rx.Observable(observer => {
-      let readyPromise;
+  channel(key): Observable<any> {
+    const mappedSubject = this.subjectMap.get(key);
 
-      if (!(key in this.observers)) {
-        this.observers[key] = [];
-        if (this.onListen) {
-          readyPromise = this.onListen(key);
-        }
-      }
+    if (!mappedSubject) {
+      const subject = new Subject();
 
-      this.observers[key].push(observer);
+      this.subjectMap.set(
+        key,
+        subject.pipe(
+          finalize(() => {
+            if (subject.observers.length === 1) {
+              return this.onUnlisten(key);
+            }
+          })
+        ) as Subject<any>
+      );
+      this.onListen(key).catch(error => subject.error(error));
+    }
 
-      if (readyPromise) {
-        readyPromise.then(
-          () => observer.next('ready'),
-          err => observer.error(err)
-        );
-      } else {
-        observer.next('ready');
-      }
-
-      return () => {
-        const list = this.observers[key];
-        const idx = list.indexOf(observer);
-        if (idx !== -1) {
-          list.splice(idx, 1);
-        }
-        if (list.length === 0) {
-          delete this.observers[key];
-          if (this.onUnlisten) {
-            this.onUnlisten(key);
-          }
-        }
-      };
-    });
+    return this.subjectMap.get(key) as Observable<any>;
   }
 
   notify(channel, message) {
-    if (channel in this.observers) {
-      this.observers[channel].forEach(observer => observer.next(message || ''));
+    const subject = this.subjectMap.get(channel);
+
+    if (subject) {
+      subject.next(message || '');
     }
   }
 }
