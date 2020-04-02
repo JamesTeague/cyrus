@@ -30,6 +30,7 @@ export default class MemoryNotifier {
           })
         ) as Subject<any>
       );
+
       this.onListen(key).catch(error => subject.error(error));
     }
 

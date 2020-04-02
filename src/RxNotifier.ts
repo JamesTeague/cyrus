@@ -54,18 +54,22 @@ export default class RxNotifier implements IRxNotifier {
 
       this.logger.debug('Creating new consumer');
 
-      const connectable$ = this.notifier.channel(channel).pipe(publish());
+      const connectable$ = this.notifier
+        .channel(channel)
+        .pipe(publish()) as ConnectableObservable<any>;
 
-      this.consumerMap.set(channel, connectable$ as ConnectableObservable<any>);
+      this.consumerMap.set(channel, connectable$);
 
       return connectable$ as ConnectableObservable<any>;
     }
 
-    const error = new Error('Notifier is not connected.');
+    const error = new Error(
+      'Notifier is not connected. Did you forget to call connect?'
+    );
     this.logger
       .withError(error)
       .error('Notifier must be connected.')
-      .withFields({ c: this.connected, n: this.notifier });
+      .withFields({ isConnected: this.connected, notifier: this.notifier });
 
     throw error;
   }
@@ -75,7 +79,9 @@ export default class RxNotifier implements IRxNotifier {
       return this.notifier.notify(channel, message);
     }
 
-    const error = new Error('Notifier is not connected.');
+    const error = new Error(
+      'Notifier is not connected. Did you forget to call connect?'
+    );
     this.logger.withError(error).error('Notifier must be connected.');
 
     throw error;

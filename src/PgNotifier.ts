@@ -18,8 +18,8 @@ export default class PgNotifier {
 
     this.memoryNotifier = new MemoryNotifier(onListen, onUnlisten);
 
-    this.notifyClient.on('notification', event => {
-      this.memoryNotifier.notify(event.channel, event.payload);
+    this.notifyClient.on('notification', ({ channel, payload }) => {
+      this.memoryNotifier.notify(channel, payload);
     });
   }
 
@@ -28,12 +28,12 @@ export default class PgNotifier {
   }
 
   notify(channel, message) {
-    let cmd = `NOTIFY ${escapeIdentifier(channel)}`;
+    let command = `NOTIFY ${escapeIdentifier(channel)}`;
 
     if (message) {
-      cmd += `, ${escapeLiteral(message)}`;
+      command += `, ${escapeLiteral(message)}`;
     }
 
-    return this.notifyClient.query(cmd);
+    return this.notifyClient.query(command);
   }
 }
